@@ -1,6 +1,6 @@
 {
-  "name": "react-select",
-  "version": "5.4.0",
+  "name": "@folksam-digital/react-select",
+  "version": "5.4.2",
   "description": "A Select control built with and for ReactJS",
   "main": "dist/react-select.cjs.js",
   "module": "dist/react-select.esm.js",
@@ -8,7 +8,7 @@
   "sideEffects": false,
   "author": "Jed Watson",
   "license": "MIT",
-  "repository": "https://github.com/JedWatson/react-select/tree/master/packages/react-select",
+  "repository": "https://github.com/romkadj/react-select/tree/master/packages/react-select",
   "dependencies": {
     "@babel/runtime": "^7.12.0",
     "@emotion/cache": "^11.4.0",
@@ -57,5 +57,6 @@
       "creatable",
       "async-creatable"
     ]
-  }
+  },
+  "gitHead": "f710a5710e06b4d0f9aba2e21a1531803ddb85c5"
 }
