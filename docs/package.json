@@ -1,7 +1,7 @@
 {
   "name": "@react-select/docs",
   "private": true,
-  "version": "5.4.2",
+  "version": "5.4.3",
   "main": "dist/docs.cjs.js",
   "author": "Jed Watson",
   "license": "MIT",
