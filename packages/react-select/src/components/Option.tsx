@@ -90,7 +90,9 @@ const Option = <
     isSelected,
     innerRef,
     innerProps,
+    data
   } = props;
+  const { value = '' } = data as any;
   return (
     <div
       css={getStyles('option', props)}
@@ -104,6 +106,7 @@ const Option = <
         className
       )}
       ref={innerRef}
+      data-value={value}
       aria-disabled={isDisabled}
       {...innerProps}
     >

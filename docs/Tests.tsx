@@ -19,6 +19,7 @@ interface SuiteState {
   readonly isDisabled: boolean;
   readonly isFixed: boolean;
   readonly isLoading: boolean;
+  readonly menuIsOpen: boolean;
   readonly escapeClearsValue: boolean;
   readonly blockScroll: boolean;
   readonly portalPlacement: MenuPlacement;
@@ -39,6 +40,7 @@ class TestSuite extends Component<SuiteProps, SuiteState> {
     isDisabled: false,
     isFixed: false,
     isLoading: false,
+    menuIsOpen: false,
     escapeClearsValue: false,
     portalPlacement: 'top',
     blockScroll: true,
@@ -48,6 +50,9 @@ class TestSuite extends Component<SuiteProps, SuiteState> {
   };
   toggleLoading = () => {
     this.setState((state) => ({ isLoading: !state.isLoading }));
+  };
+  toggleMenuIsOpen = () => {
+    this.setState((state) => ({ menuIsOpen: !state.menuIsOpen }));
   };
   toggleScroll = () => {
     this.setState((state) => ({ blockScroll: !state.blockScroll }));
@@ -83,6 +88,7 @@ class TestSuite extends Component<SuiteProps, SuiteState> {
             }}
             isDisabled={this.state.isDisabled}
             isLoading={this.state.isLoading}
+            menuIsOpen={this.state.menuIsOpen}
             options={colourOptions}
           />
           <Note Tag="label">
@@ -101,6 +107,14 @@ class TestSuite extends Component<SuiteProps, SuiteState> {
               id={`cypress-${idSuffix}__loading-checkbox`}
             />
             Loading
+          </Note>
+          <Note Tag="label" style={{ marginLeft: '1em' }}>
+            <input
+              type="checkbox"
+              onChange={this.toggleMenuIsOpen}
+              id={`cypress-${idSuffix}__menuIsOpen-checkbox`}
+            />
+            Menu is open
           </Note>
         </div>
 

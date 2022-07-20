@@ -57,6 +57,7 @@ export default class SingleSelect extends Component<{}, State> {
           defaultValue={colourOptions[0]}
           isDisabled={isDisabled}
           isLoading={isLoading}
+          menuIsOpen
           isClearable={isClearable}
           isRtl={isRtl}
           isSearchable={isSearchable}
