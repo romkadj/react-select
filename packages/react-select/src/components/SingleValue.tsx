@@ -20,6 +20,8 @@ export interface SingleValueProps<
   innerProps: JSX.IntrinsicElements['div'];
   /** Whether this is disabled. */
   isDisabled: boolean;
+  id?: string;
+  dataValue?: any;
 }
 
 export const css = <
@@ -48,9 +50,11 @@ const SingleValue = <
 >(
   props: SingleValueProps<Option, IsMulti, Group>
 ) => {
-  const { children, className, cx, getStyles, isDisabled, innerProps } = props;
+  const { children, className, cx, getStyles, isDisabled, innerProps, id, dataValue } = props;
   return (
     <div
+      id={id}
+      data-value={dataValue}
       css={getStyles('singleValue', props)}
       className={cx(
         {

@@ -1065,6 +1065,7 @@ export default class Select<
       | 'option'
       | 'placeholder'
       | 'live-region'
+      | 'single-value'
   ) => {
     return `${this.instancePrefix}-${element}`;
   };
@@ -1691,9 +1692,10 @@ export default class Select<
       return null;
     }
 
-    const singleValue = selectValue[0];
+    const singleValue = selectValue[0] as any;
+
     return (
-      <SingleValue {...commonProps} data={singleValue} isDisabled={isDisabled}>
+      <SingleValue id={this.getElementId('single-value')} {...commonProps} dataValue={singleValue?.value} isDisabled={isDisabled}>
         {this.formatOptionLabel(singleValue, 'value')}
       </SingleValue>
     );
