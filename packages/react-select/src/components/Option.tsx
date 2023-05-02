@@ -13,7 +13,7 @@ export interface OptionProps<
   Option = unknown,
   IsMulti extends boolean = boolean,
   Group extends GroupBase<Option> = GroupBase<Option>
-> extends CommonPropsAndClassName<Option, IsMulti, Group> {
+  > extends CommonPropsAndClassName<Option, IsMulti, Group> {
   /** The children to be rendered. */
   children: ReactNode;
   /** Inner ref to DOM Node */
@@ -23,7 +23,7 @@ export interface OptionProps<
   /** Text to be displayed representing the option. */
   label: string;
   /** Type is used by the menu to determine whether this is an option or a group.
-    In the case of option this is always `option`. **/
+   In the case of option this is always `option`. **/
   type: 'option';
   /** The data of the selected option. */
   data: Option;
@@ -39,7 +39,7 @@ export const optionCSS = <
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   {
     isDisabled,
     isFocused,
@@ -58,37 +58,38 @@ export const optionCSS = <
   ...(unstyled
     ? {}
     : {
-        backgroundColor: isSelected
-          ? colors.primary
-          : isFocused
+      backgroundColor: isSelected
+        ? colors.primary
+        : isFocused
           ? colors.primary25
           : 'transparent',
-        color: isDisabled
-          ? colors.neutral20
-          : isSelected
+      color: isDisabled
+        ? colors.neutral20
+        : isSelected
           ? colors.neutral0
           : 'inherit',
-        padding: `${spacing.baseUnit * 2}px ${spacing.baseUnit * 3}px`,
-        // provide some affordance on touch devices
-        ':active': {
-          backgroundColor: !isDisabled
-            ? isSelected
-              ? colors.primary
-              : colors.primary50
-            : undefined,
-        },
-      }),
+      padding: `${spacing.baseUnit * 2}px ${spacing.baseUnit * 3}px`,
+      // provide some affordance on touch devices
+      ':active': {
+        backgroundColor: !isDisabled
+          ? isSelected
+            ? colors.primary
+            : colors.primary50
+          : undefined,
+      },
+    }),
 });
 
 const Option = <
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: OptionProps<Option, IsMulti, Group>
 ) => {
   const { children, isDisabled, isFocused, isSelected, innerRef, innerProps } =
     props;
+  const { value = null } = props.data as any;
   return (
     <div
       {...getStyleProps(props, 'option', {
@@ -98,6 +99,7 @@ const Option = <
         'option--is-selected': isSelected,
       })}
       ref={innerRef}
+      data-value={value}
       aria-disabled={isDisabled}
       {...innerProps}
     >
