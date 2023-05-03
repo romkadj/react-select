@@ -75,7 +75,7 @@ export interface Props<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
-> {
+  > {
   /** HTML ID of an element containing an error message related to the input**/
   'aria-errormessage'?: AriaAttributes['aria-errormessage'];
   /** Indicate if the value entered in the field is invalid **/
@@ -193,6 +193,8 @@ export interface Props<
   isRtl: boolean;
   /** Whether to enable search functionality */
   isSearchable: boolean;
+  /** Whether to stop onClick event from bubbling */
+  stopPropagation: boolean;
   /** Async: Text to display when loading options */
   loadingMessage: (obj: { inputValue: string }) => ReactNode;
   /** Minimum height of the menu before flipping */
@@ -296,6 +298,7 @@ export const defaultProps = {
   isLoading: false,
   isMulti: false,
   isRtl: false,
+  stopPropagation: false,
   isSearchable: true,
   isOptionDisabled: isOptionDisabledBuiltin,
   loadingMessage: () => 'Loading...',
@@ -324,7 +327,7 @@ interface State<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
-> {
+  > {
   ariaSelection: AriaSelection<Option, IsMulti> | null;
   inputIsHidden: boolean;
   isFocused: boolean;
@@ -362,7 +365,7 @@ function toCategorizedOption<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   option: Option,
   selectValue: Options<Option>,
@@ -388,7 +391,7 @@ function buildCategorizedOptions<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   selectValue: Options<Option>
 ): CategorizedGroupOrOption<Option, Group>[] {
@@ -402,11 +405,11 @@ function buildCategorizedOptions<
           .filter((categorizedOption) => isFocusable(props, categorizedOption));
         return categorizedOptions.length > 0
           ? {
-              type: 'group' as const,
-              data: groupOrOption,
-              options: categorizedOptions,
-              index: groupOrOptionIndex,
-            }
+            type: 'group' as const,
+            data: groupOrOption,
+            options: categorizedOptions,
+            index: groupOrOptionIndex,
+          }
           : undefined;
       }
       const categorizedOption = toCategorizedOption(
@@ -425,7 +428,7 @@ function buildCategorizedOptions<
 function buildFocusableOptionsFromCategorizedOptions<
   Option,
   Group extends GroupBase<Option>
->(categorizedOptions: readonly CategorizedGroupOrOption<Option, Group>[]) {
+  >(categorizedOptions: readonly CategorizedGroupOrOption<Option, Group>[]) {
   return categorizedOptions.reduce<Option[]>(
     (optionsAccumulator, categorizedOption) => {
       if (categorizedOption.type === 'group') {
@@ -445,7 +448,7 @@ function buildFocusableOptions<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(props: Props<Option, IsMulti, Group>, selectValue: Options<Option>) {
+  >(props: Props<Option, IsMulti, Group>, selectValue: Options<Option>) {
   return buildFocusableOptionsFromCategorizedOptions(
     buildCategorizedOptions(props, selectValue)
   );
@@ -455,7 +458,7 @@ function isFocusable<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   categorizedOption: CategorizedOption<Option>
 ) {
@@ -472,7 +475,7 @@ function getNextFocusedValue<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(state: State<Option, IsMulti, Group>, nextSelectValue: Options<Option>) {
+  >(state: State<Option, IsMulti, Group>, nextSelectValue: Options<Option>) {
   const { focusedValue, selectValue: lastSelectValue } = state;
   const lastFocusedIndex = lastSelectValue.indexOf(focusedValue!);
   if (lastFocusedIndex > -1) {
@@ -493,7 +496,7 @@ function getNextFocusedOption<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(state: State<Option, IsMulti, Group>, options: Options<Option>) {
+  >(state: State<Option, IsMulti, Group>, options: Options<Option>) {
   const { focusedOption: lastFocusedOption } = state;
   return lastFocusedOption && options.indexOf(lastFocusedOption) > -1
     ? lastFocusedOption
@@ -503,7 +506,7 @@ const getOptionLabel = <
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   data: Option
 ): string => {
@@ -513,7 +516,7 @@ const getOptionValue = <
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   data: Option
 ): string => {
@@ -524,7 +527,7 @@ function isOptionDisabled<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   option: Option,
   selectValue: Options<Option>
@@ -537,7 +540,7 @@ function isOptionSelected<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   option: Option,
   selectValue: Options<Option>
@@ -553,7 +556,7 @@ function filterOption<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>,
   option: FilterOptionOption<Option>,
   inputValue: string
@@ -565,7 +568,7 @@ const shouldHideSelectedOptions = <
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
->(
+  >(
   props: Props<Option, IsMulti, Group>
 ) => {
   const { hideSelectedOptions, isMulti } = props;
@@ -579,10 +582,10 @@ export default class Select<
   Option = unknown,
   IsMulti extends boolean = false,
   Group extends GroupBase<Option> = GroupBase<Option>
-> extends Component<
+  > extends Component<
   Props<Option, IsMulti, Group>,
   State<Option, IsMulti, Group>
-> {
+  > {
   static defaultProps = defaultProps;
   state: State<Option, IsMulti, Group> = {
     ariaSelection: null,
@@ -687,9 +690,9 @@ export default class Select<
     const newInputIsHiddenState =
       inputIsHiddenAfterUpdate != null && props !== prevProps
         ? {
-            inputIsHidden: inputIsHiddenAfterUpdate,
-            inputIsHiddenAfterUpdate: undefined,
-          }
+          inputIsHidden: inputIsHiddenAfterUpdate,
+          inputIsHiddenAfterUpdate: undefined,
+        }
         : {};
 
     let newAriaSelection = ariaSelection;
@@ -1198,6 +1201,12 @@ export default class Select<
     event.preventDefault();
     this.focusInput();
   };
+  onClick: MouseEventHandler<HTMLDivElement> = (event) => {
+    if (this.props.stopPropagation) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  };
   onMenuMouseMove: MouseEventHandler<HTMLDivElement> = (event) => {
     this.blockOptionHover = false;
   };
@@ -1225,6 +1234,10 @@ export default class Select<
       ) {
         this.onMenuClose();
       }
+    }
+    if (this.props.stopPropagation) {
+      event.preventDefault();
+      event.stopPropagation();
     }
     if (
       (event.target as HTMLElement).tagName !== 'INPUT' &&
@@ -1633,11 +1646,11 @@ export default class Select<
       }),
       ...(this.hasValue()
         ? ariaSelection?.action === 'initial-input-focus' && {
-            'aria-describedby': this.getElementId('live-region'),
-          }
+        'aria-describedby': this.getElementId('live-region'),
+      }
         : {
-            'aria-describedby': this.getElementId('placeholder'),
-          }),
+          'aria-describedby': this.getElementId('placeholder'),
+        }),
     };
 
     if (!isSearchable) {
@@ -1874,6 +1887,7 @@ export default class Select<
       noOptionsMessage,
       onMenuScrollToTop,
       onMenuScrollToBottom,
+      stopPropagation,
     } = this.props;
 
     if (!menuIsOpen) return null;
@@ -1882,8 +1896,20 @@ export default class Select<
     const render = (props: CategorizedOption<Option>, id: string) => {
       const { type, data, isDisabled, isSelected, label, value } = props;
       const isFocused = focusedOption === data;
-      const onHover = isDisabled ? undefined : () => this.onOptionHover(data);
-      const onSelect = isDisabled ? undefined : () => this.selectOption(data);
+      const onHover = isDisabled ? undefined : (event: any) => {
+        if (stopPropagation) {
+          event.stopPropagation();
+          event.preventDefault();
+        }
+        this.onOptionHover(data);
+      };
+      const onSelect = isDisabled ? undefined : (event: any) => {
+        if (stopPropagation) {
+          event.stopPropagation();
+          event.preventDefault();
+        }
+        this.selectOption(data);
+      };
       const optionId = `${this.getElementId('option')}-${id}`;
       const innerProps = {
         id: optionId,
@@ -2109,6 +2135,7 @@ export default class Select<
           innerProps={{
             onMouseDown: this.onControlMouseDown,
             onTouchEnd: this.onControlTouchEnd,
+            onClick: this.onClick,
           }}
           isDisabled={isDisabled}
           isFocused={isFocused}
@@ -2136,4 +2163,4 @@ export type PublicBaseSelectProps<
   Option,
   IsMulti extends boolean,
   Group extends GroupBase<Option>
-> = JSX.LibraryManagedAttributes<typeof Select, Props<Option, IsMulti, Group>>;
+  > = JSX.LibraryManagedAttributes<typeof Select, Props<Option, IsMulti, Group>>;
